@@ -209,6 +209,11 @@ def load_xml_code_data(xml_filename: str) -> CodeDataset:
         return serializer.deserialize(inputs={"xml_file": xml_file})
 
 
+def auto_load(files) -> Union[TrackingDataset, EventDataset, CodeDataset]:
+    if not isinstance(files, dict)
+
+
+
 def write_xml_code_data(dataset: CodeDataset, xml_filename: str):
     serializer = XMLCodeSerializer()
     with open(xml_filename, "wb") as xml_file:

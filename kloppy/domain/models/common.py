@@ -1,7 +1,17 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field, replace
+from dataclasses import dataclass, field, replace, make_dataclass
 from enum import Enum, Flag
-from typing import Dict, List, Optional, Callable, Union, Any, TypeVar, Generic
+from typing import (
+    Dict,
+    List,
+    Optional,
+    Callable,
+    Union,
+    Any,
+    TypeVar,
+    Generic,
+    Type,
+)
 
 from .pitch import PitchDimensions, Point, Dimension
 from .formation import FormationType
@@ -873,3 +883,18 @@ class Dataset(ABC, Generic[T]):
         for record in self.records:
             if record.record_id == record_id:
                 return record
+
+    def set_record_attribute(self, name: str, value: Callable[[T], Any]):
+        if not self.records:
+            return
+
+        record = self.records[0]
+        new_class = make_dataclass(
+            record.__class__.__name__,
+            fields=[(name, Any, field(init=False))],
+            bases=(record.__class__,),
+        )
+
+        for record in self.records:
+            setattr(record, name, value(record))
+            record.__class__ = new_class

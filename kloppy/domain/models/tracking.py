@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
-from typing import List, Dict, Optional, Callable, Union, Any
+from dataclasses import dataclass, field, make_dataclass
+from typing import List, Dict, Optional, Callable, Union, Any, Type
 
 from kloppy.domain.models.common import DatasetType
 
@@ -128,6 +128,26 @@ class TrackingDataset(Dataset[Frame]):
         return pd.DataFrame.from_records(
             map(generic_record_converter, self.records)
         )
+
+    def set_player_attribute(
+        self,
+        name: str,
+        value: Callable[[Frame, Player, PlayerData], Any],
+    ):
+        if not self.frames:
+            return
+
+        frame = list(self.frames[0].players_data.values())[0]
+        new_class = make_dataclass(
+            "PlayerData",
+            fields=[(name, Any, field(init=False))],
+            bases=(frame.__class__,),
+        )
+
+        for frame in self.frames:
+            for player, player_data in frame.players_data.items():
+                setattr(player_data, name, value(frame, player, player_data))
+                player_data.__class__ = new_class
 
 
 __all__ = ["Frame", "TrackingDataset", "PlayerData"]

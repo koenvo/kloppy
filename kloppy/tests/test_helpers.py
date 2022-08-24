@@ -1,5 +1,6 @@
 import os
 
+import pytest
 from pandas import DataFrame
 from pandas.testing import assert_frame_equal
 
@@ -296,3 +297,39 @@ class TestHelpers:
         )
 
         assert_frame_equal(data_frame, expected_data_frame, check_like=True)
+
+    @pytest.fixture
+    def meta_data(self) -> str:
+        base_dir = os.path.dirname(__file__)
+
+        return f"{base_dir}/files/tracab_meta.xml"
+
+    @pytest.fixture
+    def raw_data(self) -> str:
+        base_dir = os.path.dirname(__file__)
+
+        return f"{base_dir}/files/tracab_raw.dat"
+
+    def test_add_attribute(self, meta_data: str, raw_data: str):
+        dataset = tracab.load(
+            meta_data=meta_data,
+            raw_data=raw_data,
+            coordinates="tracab",
+            only_alive=False,
+        )
+
+        dataset.set_player_attribute(
+            "extra_field",
+            lambda frame, player, player_data: frame.frame_id,
+        )
+        dataset.set_record_attribute(
+            "extra_field", lambda frame: frame.frame_id * 10
+        )
+
+        idx = 5  # pick 'random' frame
+        frame_id = dataset.records[idx].frame_id
+        assert all(
+            player_data.extra_field == frame_id
+            for player_data in dataset.records[idx].players_data.values()
+        )
+        assert dataset.records[idx].extra_field == frame_id * 10

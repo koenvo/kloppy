@@ -281,6 +281,9 @@ class Period:
     def __eq__(self, other):
         return isinstance(other, Period) and other.id == self.id
 
+    def __lt__(self, other):
+        return self.id < other.id
+
 
 class Orientation(Enum):
     """

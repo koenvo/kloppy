@@ -355,7 +355,7 @@ class StatsPerformDeserializer(TrackingDataDeserializer[StatsPerformInputs]):
 
         meta_data = Metadata(
             teams=teams_list,
-            periods=periods,
+            periods=list(sorted(periods.values())),
             pitch_dimensions=transformer.get_to_coordinate_system().pitch_dimensions,
             score=None,
             frame_rate=frame_rate,

@@ -53,19 +53,19 @@ class TestStatsPerformTracking:
         assert dataset.metadata.orientation == Orientation.AWAY_HOME
 
         # Check the periods
-        assert dataset.metadata.periods[1].id == 1
-        assert dataset.metadata.periods[1].start_timestamp == datetime(
+        assert dataset.metadata.periods[0].id == 1
+        assert dataset.metadata.periods[0].start_timestamp == datetime(
             2020, 8, 23, 11, 0, 10
         )
-        assert dataset.metadata.periods[1].end_timestamp == datetime(
+        assert dataset.metadata.periods[0].end_timestamp == datetime(
             2020, 8, 23, 11, 48, 15
         )
 
-        assert dataset.metadata.periods[2].id == 2
-        assert dataset.metadata.periods[2].start_timestamp == datetime(
+        assert dataset.metadata.periods[1].id == 2
+        assert dataset.metadata.periods[1].start_timestamp == datetime(
             2020, 8, 23, 12, 6, 22
         )
-        assert dataset.metadata.periods[2].end_timestamp == datetime(
+        assert dataset.metadata.periods[1].end_timestamp == datetime(
             2020, 8, 23, 12, 56, 30
         )
 
